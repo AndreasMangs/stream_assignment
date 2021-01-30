@@ -108,7 +108,7 @@ public class StreamAssignment {
         Person[] result = null;
 
         //Write code here
-    //    result = people.stream().filter(person -> person.getFirstName().equals("Erik")).toArray();
+        result = people.stream().filter(person -> person.getFirstName().equals("Erik")).toArray(Person[]::new);
 
         assertNotNull(result);
         assertEquals(expectedLength, result.length);
@@ -162,18 +162,11 @@ public class StreamAssignment {
         //this.fullName = fullName;
 
         //Write code here
-        List<Person> tempList = new ArrayList<>();
-        tempList = people.stream()
-                .filter(person -> person.getDateOfBirth().isBefore(date)).collect(Collectors.toList());
-
-        dtoList = tempList.stream()
-                .map(Person::getPersonId).flatMap()
-
-        /*
         dtoList = people.stream()
-                .flatMap(p -> Stream.of(p.getPersonId(),p.getFirstName())
-                .collect(Collectors.toList()));
-*/
+                .filter(person -> person.getDateOfBirth().isBefore(date))
+                .map(person -> new PersonDto(person.getPersonId(), person.getFirstName() + " " + person.getLastName()))
+                .collect(Collectors.toList());
+
         assertNotNull(dtoList);
         assertEquals(expectedSize, dtoList.size());
     }
