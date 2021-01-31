@@ -7,12 +7,14 @@ import se.lexicon.vxo.model.PersonDto;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.groupingBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -183,6 +185,12 @@ public class StreamAssignment {
         Optional<String> optional = null;
 
         //Write code here
+        optional = people.stream().filter(p -> p.getPersonId()==5914)
+                .map(p -> p.getDateOfBirth())
+                .map(p -> p.format(DateTimeFormatter.ofPattern("eeee dd MMMM YYYY",Locale.ENGLISH)))
+                .map(p ->p.toUpperCase())
+                .peek(System.out::println)
+                .findFirst();
 
         assertNotNull(optional);
         assertTrue(optional.isPresent());
@@ -201,6 +209,11 @@ public class StreamAssignment {
         double averageAge = 0;
 
         //Write code here
+        averageAge= people.stream().mapToInt(personToAge)
+                .average()
+                .getAsDouble();
+
+        //System.out.println(averageAge);
 
         assertTrue(averageAge > 0);
         assertEquals(expected, averageAge, .01);
@@ -216,6 +229,14 @@ public class StreamAssignment {
         String[] result = null;
 
         //Write code here
+        result = people.stream()
+                .filter(person -> person.getFirstName().equalsIgnoreCase(new StringBuilder(person.getFirstName().toLowerCase()).reverse().toString()))
+                .map(person -> person.getFirstName())
+                .distinct()
+                .sorted()
+                .toArray(String[]::new);
+
+        //Arrays.stream(result).forEach(System.out::println);
 
         assertNotNull(result);
         assertArrayEquals(expected, result);
@@ -230,6 +251,8 @@ public class StreamAssignment {
         Map<String, List<Person>> personMap = null;
 
         //Write code here
+        personMap = people.stream()
+                .collect(groupingBy(person -> person.getLastName()));
 
         assertNotNull(personMap);
         assertEquals(expectedSize, personMap.size());
@@ -243,6 +266,11 @@ public class StreamAssignment {
         LocalDate[] _2020_dates = null;
 
         //Write code here
+        _2020_dates = Stream.iterate(LocalDate.of(2020,01,01),p -> p.plusDays(1))
+                .limit(366)
+                .toArray(LocalDate[]::new);
+
+        //Arrays.stream(_2020_dates).sequential().forEach(System.out::println);
 
 
         assertNotNull(_2020_dates);
